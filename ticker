@@ -42,23 +42,20 @@ VAR _Css =
     "html,body{overflow:hidden!important;margin:0;background:transparent}"
     & ".a{animation-duration:" & _T & "s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:cubic-bezier(.65,0,.35,1);animation-delay:calc(var(--d,0s) + var(--o,0s))}"
     & ".fb{transform-box:fill-box;transform-origin:center}"
-    & ".k{animation-name:k}@keyframes k{0%{opacity:0;transform:translateY(24px);filter:blur(4px)}2.5%{opacity:1;transform:translateY(0px);filter:blur(0px)}12.857%{opacity:1;transform:translateY(0px);filter:blur(0px)}14.286%,100%{opacity:0;transform:translateY(-24px);filter:blur(6px)}}"
-    & ".c{animation-name:c;transform-origin:360px 380px}@keyframes c{0%{transform:scale(.82)}5%,100%{transform:scale(1)}}"
+    & ".k{animation-name:k}@keyframes k{0%{opacity:0;transform:translateY(16px)}2.5%,12.857%{opacity:1;transform:translateY(0px)}14.286%,100%{opacity:0;transform:translateY(-16px)}}"
+    & ".c{animation-name:c;transform-origin:360px 380px}@keyframes c{0%{transform:scale(.96)}5%,100%{transform:scale(1)}}"
     & ".v{animation-name:v;animation-timing-function:cubic-bezier(.16,1,.3,1)}@keyframes v{0%,1.071%{transform:translateY(190px)}5%,12.5%{transform:translateY(0px)}14.286%,100%{transform:translateY(-190px)}}"
     & ".ln{animation-name:ln;transform-box:fill-box;transform-origin:left center}@keyframes ln{0%,2.143%{transform:scaleX(0)}5.714%,12.857%{transform:scaleX(1)}14.286%,100%{transform:scaleX(0)}}"
     & ".t{animation-name:t}@keyframes t{0%,4.286%{opacity:0;transform:translateX(-30px)}6.786%,12.857%{opacity:1;transform:translateX(0px)}14.286%,100%{opacity:0;transform:translateX(0px)}}"
-    & ".dr{animation-name:dr}@keyframes dr{0%,1.786%{stroke-dashoffset:100}7.857%,100%{stroke-dashoffset:0}}"
-    & ".gy{animation-name:gy;transform-box:fill-box;transform-origin:center bottom}@keyframes gy{0%,1.786%{transform:scaleY(0)}6.429%,100%{transform:scaleY(1)}}"
-    & ".gx{animation-name:gx;transform-box:fill-box;transform-origin:left center}@keyframes gx{0%,1.786%{transform:scaleX(0)}7.143%,100%{transform:scaleX(1)}}"
-    & ".sx{animation-name:sx}@keyframes sx{0%,1.786%{transform:translateX(0px)}7.143%,100%{transform:translateX(var(--x))}}"
-    & ".pp{animation-name:pp}@keyframes pp{0%,1.786%{transform:scale(0) rotate(-45deg)}4.643%{transform:scale(1.18) rotate(6deg)}6.071%,100%{transform:scale(1) rotate(0deg)}}"
-    & ".nd{animation-name:nd;transform-origin:360px 470px}@keyframes nd{0%,1.786%{transform:rotate(-90deg)}6.429%{transform:rotate(calc(var(--a) + 8deg))}8.214%,100%{transform:rotate(var(--a))}}"
-    & ".rs{animation-name:rs}@keyframes rs{0%,1.786%{transform:translateY(var(--h))}8.571%,100%{transform:translateY(0px)}}"
-    & ".wv{animation:wv 2.4s linear infinite}@keyframes wv{from{transform:translateX(0px)}to{transform:translateX(-142px)}}"
-    & ".wb{animation:wb 3.6s linear infinite}@keyframes wb{from{transform:translateX(-142px)}to{transform:translateX(0px)}}"
-    & ".bb{animation:bb 3s ease-in infinite}@keyframes bb{0%{transform:translateY(0px);opacity:0}25%{opacity:.7}100%{transform:translateY(-130px);opacity:0}}"
-    & ".sp{animation:sp 14s linear infinite;transform-origin:360px 380px}@keyframes sp{to{transform:rotate(360deg)}}"
-    & ".gl{animation:gl 4s ease-in-out infinite;transform-origin:360px 380px}@keyframes gl{0%,100%{transform:scale(.92);opacity:.7}50%{transform:scale(1.06);opacity:1}}"
+-- chart build-ins: every keyframe returns to its start state at 14.6% (stage already hidden),
+-- so staggered elements (--o > 0) never show their end state and "rewind" when a slot starts
+    & ".dr{animation-name:dr}@keyframes dr{0%,1.786%{stroke-dashoffset:100}7.857%,14.5%{stroke-dashoffset:0}14.6%,100%{stroke-dashoffset:100}}"
+    & ".gy{animation-name:gy;transform-box:fill-box;transform-origin:center bottom}@keyframes gy{0%,1.786%{transform:scaleY(0)}6.429%,14.5%{transform:scaleY(1)}14.6%,100%{transform:scaleY(0)}}"
+    & ".gx{animation-name:gx;transform-box:fill-box;transform-origin:left center}@keyframes gx{0%,1.786%{transform:scaleX(0)}7.143%,14.5%{transform:scaleX(1)}14.6%,100%{transform:scaleX(0)}}"
+    & ".sx{animation-name:sx}@keyframes sx{0%,1.786%{transform:translateX(0px)}7.143%,14.5%{transform:translateX(var(--x))}14.6%,100%{transform:translateX(0px)}}"
+    & ".pp{animation-name:pp}@keyframes pp{0%,1.786%{opacity:0;transform:scale(.6)}5.357%,14.5%{opacity:1;transform:scale(1)}14.6%,100%{opacity:0;transform:scale(.6)}}"
+    & ".fi{animation-name:fi}@keyframes fi{0%,1.786%{opacity:0}4.286%,14.5%{opacity:1}14.6%,100%{opacity:0}}"
+    & ".nd{animation-name:nd;transform-origin:360px 470px}@keyframes nd{0%,1.786%{transform:rotate(-90deg)}8.214%,14.5%{transform:rotate(var(--a))}14.6%,100%{transform:rotate(-90deg)}}"
     & ".r{transform-box:fill-box;transform-origin:left center}"
     & ".nv{animation:nv " & _T & "s cubic-bezier(.65,0,.35,1) infinite both}"
 
@@ -99,11 +96,9 @@ VAR _Stages =
         VAR _Chart =
             SWITCH (
                 i,
-                -- 0 | Storage: drawn ring + spinning orbit + stacked documents
+                -- 0 | Storage: donut ring + stacked documents
                 0,
-                    "<circle cx='360' cy='380' r='184' fill='none' stroke='#FFFFFF' stroke-opacity='0.18' stroke-width='8' stroke-dasharray='1 8'/>"
-                    & "<circle class='sp' cx='360' cy='380' r='116' fill='none' stroke='#7FE3EC' stroke-opacity='0.4' stroke-width='2' stroke-dasharray='3 10'/>"
-                    & "<circle cx='360' cy='380' r='150' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='22'/>"
+                    "<circle cx='360' cy='380' r='150' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='22'/>"
                     & IF ( R > 0, "<circle class='a dr' cx='360' cy='380' r='150' pathLength='100' fill='none' stroke='url(#gA)' stroke-width='22' stroke-linecap='round' stroke-dasharray='" & P & " 200' transform='rotate(-90 360 380)'/>" )
                     & CONCATENATEX (
                         GENERATESERIES ( 0, 2, 1 ),
@@ -115,25 +110,22 @@ VAR _Stages =
                             & "</g></g>",
                         "", [Value], ASC
                     ),
-                -- 1 | Events: target column vs delivered column
+                -- 1 | Events: delivered column against a target reference line
                 1,
                     VAR _Mx = MAX ( MAX ( _Del, _Tgt ), 1 )
                     VAR hT  = ROUND ( 300 * DIVIDE ( _Tgt, _Mx ), 1 )
                     VAR hD  = ROUND ( 300 * DIVIDE ( _Del, _Mx ), 1 )
-                    VAR hTs = SUBSTITUTE ( FORMAT ( hT, "0.0" ), ",", "." )
                     VAR hDs = SUBSTITUTE ( FORMAT ( hD, "0.0" ), ",", "." )
                     VAR yT  = SUBSTITUTE ( FORMAT ( 540 - hT, "0.0" ), ",", "." )
                     VAR yD  = SUBSTITUTE ( FORMAT ( 540 - hD, "0.0" ), ",", "." )
                     RETURN
                         "<path d='M190 465H530M190 390H530M190 315H530M190 240H530' stroke='#FFFFFF' stroke-opacity='0.06'/>"
-                        & "<rect class='a gy' x='220' y='" & yT & "' width='110' height='" & hTs & "' rx='6' fill='#FFFFFF' fill-opacity='0.05' stroke='#FFFFFF' stroke-opacity='0.35' stroke-dasharray='6 6'/>"
-                        & "<rect class='a gy' style='--o:.15s' x='390' y='" & yD & "' width='110' height='" & hDs & "' rx='6' fill='url(#gV)'/>"
+                        & "<rect class='a gy' x='305' y='" & yD & "' width='110' height='" & hDs & "' rx='6' fill='url(#gV)'/>"
                         & "<rect class='a gx' style='--o:.5s' x='190' y='" & yT & "' width='340' height='2' fill='#7FE3EC' fill-opacity='0.6'/>"
-                        & "<text class='a t' style='--o:-.6s' x='275' y='" & SUBSTITUTE ( FORMAT ( 524 - hT, "0.0" ), ",", "." ) & "' text-anchor='middle' fill='#8C979D' font-size='20'>" & FORMAT ( _Tgt, "#,0" ) & "</text>"
-                        & "<text class='a t' style='--o:-.45s' x='445' y='" & SUBSTITUTE ( FORMAT ( 524 - hD, "0.0" ), ",", "." ) & "' text-anchor='middle' fill='#FFFFFF' font-size='22' font-weight='600'>" & FORMAT ( _Del, "#,0" ) & "</text>"
+                        & "<text class='a t' style='--o:-.6s' x='530' y='" & SUBSTITUTE ( FORMAT ( 530 - hT, "0.0" ), ",", "." ) & "' text-anchor='end' fill='#8C979D' font-size='15' letter-spacing='1.5'>TARGET " & FORMAT ( _Tgt, "#,0" ) & "</text>"
+                        & "<text class='a t' style='--o:-.45s' x='360' y='" & SUBSTITUTE ( FORMAT ( 524 - hD, "0.0" ), ",", "." ) & "' text-anchor='middle' fill='#FFFFFF' font-size='22' font-weight='600'>" & FORMAT ( _Del, "#,0" ) & "</text>"
                         & "<rect x='190' y='540' width='340' height='2' fill='#FFFFFF' fill-opacity='0.25'/>"
-                        & "<text x='275' y='576' text-anchor='middle' fill='#8C979D' font-size='15' letter-spacing='2'>TARGET</text>"
-                        & "<text x='445' y='576' text-anchor='middle' fill='#7FE3EC' font-size='15' letter-spacing='2'>DELIVERED</text>",
+                        & "<text x='360' y='576' text-anchor='middle' fill='#7FE3EC' font-size='15' letter-spacing='2'>DELIVERED</text>",
                 -- 2 | Survey: five stars popping in, partially filled to the score
                 2,
                     CONCATENATEX (
@@ -166,7 +158,7 @@ VAR _Stages =
                             & "<text x='" & x + 11 & "' y='550' text-anchor='middle' fill='#5E6A70' font-size='14'>" & j & "</text>",
                         "", [Value], ASC
                     ),
-                -- 4 | Admin Assist: semicircle gauge with swinging needle
+                -- 4 | Admin Assist: semicircle gauge with needle
                 4,
                     VAR Ang = SUBSTITUTE ( FORMAT ( -90 + 180 * R, "0.0" ), ",", "." )
                     RETURN
@@ -176,7 +168,7 @@ VAR _Stages =
                         & "<g class='a nd' style='--a:" & Ang & "deg'><line x1='360' y1='470' x2='360' y2='322' stroke='#FFFFFF' stroke-width='5' stroke-linecap='round'/><circle cx='360' cy='322' r='7' fill='#10DCE8'/></g>"
                         & "<circle cx='360' cy='470' r='16' fill='#161718' stroke='#10DCE8' stroke-width='4'/>"
                         & "<text x='190' y='516' text-anchor='middle' fill='#5E6A70' font-size='16'>0</text><text x='530' y='516' text-anchor='middle' fill='#5E6A70' font-size='16'>100</text>",
-                -- 5 | ESG: progress capsule with travelling head + 10-dot tally
+                -- 5 | ESG: progress bar with travelling marker + 10-dot tally
                 5,
                     VAR W = SUBSTITUTE ( FORMAT ( 380 * R, "0.0" ), ",", "." )
                     RETURN
@@ -188,7 +180,7 @@ VAR _Stages =
                         )
                         & "<rect x='170' y='360' width='380' height='36' rx='18' fill='#FFFFFF' fill-opacity='0.08'/>"
                         & "<rect class='a gx' x='170' y='360' width='" & W & "' height='36' rx='18' fill='url(#gA)'/>"
-                        & "<g class='a sx' style='--x:" & W & "px'><circle cx='170' cy='378' r='28' fill='#10DCE8' fill-opacity='0.22'/><circle cx='170' cy='378' r='13' fill='#FFFFFF'/></g>"
+                        & "<g class='a sx' style='--x:" & W & "px'><circle cx='170' cy='378' r='13' fill='#FFFFFF' stroke='#10DCE8' stroke-width='3'/></g>"
                         & CONCATENATEX (
                             GENERATESERIES ( 0, 9, 1 ),
                             VAR k = [Value]
@@ -197,23 +189,33 @@ VAR _Stages =
                                 & IF ( k < ROUND ( R * 10, 0 ), "fill='#10DCE8'", "fill='none' stroke='#FFFFFF' stroke-opacity='0.25' stroke-width='2'" ) & "/></g>",
                             "", [Value], ASC
                         ),
-                -- 6 | Diversion: liquid fill with moving waves and bubbles
+                -- 6 | Diversion: 10 x 10 waffle grid (1 cell = 1%), rows fill bottom-up
                 6,
-                    VAR yl = SUBSTITUTE ( FORMAT ( 522 - 284 * R, "0.0" ), ",", "." )
-                    VAR yl2 = SUBSTITUTE ( FORMAT ( 528 - 284 * R, "0.0" ), ",", "." )
-                    VAR H = SUBSTITUTE ( FORMAT ( 284 * R + 24, "0.0" ), ",", "." )
-                    VAR Wv = " t71 0 t71 0 t71 0 t71 0 t71 0 t71 0 t71 0V560H76Z"
+                    VAR N = ROUND ( R * 100, 0 )
                     RETURN
-                        "<circle class='sp' cx='360' cy='380' r='172' fill='none' stroke='#7FE3EC' stroke-opacity='0.3' stroke-width='2' stroke-dasharray='2 12'/>"
-                        & "<circle cx='360' cy='380' r='150' fill='none' stroke='#10DCE8' stroke-opacity='0.45' stroke-width='3'/>"
-                        & "<g clip-path='url(#lq)'><rect x='218' y='238' width='284' height='284' fill='#FFFFFF' fill-opacity='0.03'/>"
-                        & "<g class='a rs' style='--h:" & H & "px'>"
-                        & "<path class='wb' d='M76 " & yl2 & "q35.5 14 71 0" & Wv & "' fill='#10DCE8' fill-opacity='0.3'/>"
-                        & "<path class='wv' d='M76 " & yl & "q35.5 -14 71 0" & Wv & "' fill='url(#gV)'/>"
-                        & "<circle class='bb' cx='320' cy='510' r='4' fill='#FFFFFF' fill-opacity='0.6'/>"
-                        & "<circle class='bb' style='animation-delay:1s' cx='372' cy='516' r='6' fill='#FFFFFF' fill-opacity='0.5'/>"
-                        & "<circle class='bb' style='animation-delay:2s' cx='410' cy='512' r='3' fill='#FFFFFF' fill-opacity='0.6'/>"
-                        & "</g></g>"
+                        CONCATENATEX (
+                            GENERATESERIES ( 0, 99, 1 ),
+                            VAR n = [Value]
+                            RETURN
+                                "<rect x='" & 213 + MOD ( n, 10 ) * 30 & "' y='" & 486 - INT ( n / 10 ) * 30 & "' width='24' height='24' rx='3' fill='#FFFFFF' fill-opacity='0.08'/>",
+                            "", [Value], ASC
+                        )
+                        & CONCATENATEX (
+                            FILTER ( GENERATESERIES ( 0, 9, 1 ), [Value] * 10 < N ),
+                            VAR rb = [Value]
+                            VAR cnt = MIN ( 10, N - rb * 10 )
+                            RETURN
+                                "<g class='a fi' style='--o:" & SUBSTITUTE ( FORMAT ( 0.3 + rb * 0.08, "0.00" ), ",", "." ) & "s'>"
+                                & CONCATENATEX (
+                                    GENERATESERIES ( 0, cnt - 1, 1 ),
+                                    "<rect x='" & 213 + [Value] * 30 & "' y='" & 486 - rb * 30 & "' width='24' height='24' rx='3' fill='url(#gV)'/>",
+                                    "", [Value], ASC
+                                )
+                                & "</g>",
+                            "", [Value], ASC
+                        )
+                        & "<rect x='213' y='534' width='14' height='14' rx='3' fill='#10DCE8'/><text x='235' y='546' fill='#8C979D' font-size='15'>Diverted</text>"
+                        & "<rect x='335' y='534' width='14' height='14' rx='3' fill='#FFFFFF' fill-opacity='0.15'/><text x='357' y='546' fill='#8C979D' font-size='15'>Landfill</text>"
             )
         RETURN
             "<g class='a k' style='--d:-" & _T - _S * i & "s'>"
@@ -253,14 +255,11 @@ RETURN
     & "<linearGradient id='tF' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.05'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0.015'/></linearGradient>"
     & "<linearGradient id='gA' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#00B8D4'/></linearGradient>"
     & "<linearGradient id='gV' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#0A8FA8'/></linearGradient>"
-    & "<radialGradient id='gG'><stop offset='0.4' stop-color='#10DCE8' stop-opacity='0.12'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0'/></radialGradient>"
     & "<clipPath id='vc'><rect x='680' y='250' width='620' height='200'/></clipPath>"
-    & "<clipPath id='lq'><circle cx='360' cy='380' r='142'/></clipPath>"
     & "</defs>"
     & "<rect x='1' y='1' width='1318' height='830' rx='20' fill='#161718'/>"
     & "<rect x='1' y='1' width='1318' height='830' rx='20' fill='url(#tF)' stroke='#FFFFFF' stroke-opacity='0.12' stroke-width='1.5'/>"
     & "<text x='106' y='112' fill='#8C979D' font-size='18' font-weight='600' letter-spacing='3'>ADMIN &#183; OTHER RELEVANT KPIs</text>"
-    & "<circle class='gl' cx='360' cy='380' r='230' fill='url(#gG)'/>"
     & _Stages
     & _Nav
     & "</svg></div>"
