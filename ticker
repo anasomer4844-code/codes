@@ -1,30 +1,266 @@
-Page Admin KPIs Ticker HTML = VAR _V0 = SUBSTITUTE ( FORMAT ( [Admin Storage Reduction] * 100, "0.00" ), ",", "." )
-VAR _V1 = FORMAT ( [Admin Events Delivered], "#,0" )
-VAR _V2 = SUBSTITUTE ( FORMAT ( [Admin Event Survey Score], "0.0" ), ",", "." )
-VAR _V3 = SUBSTITUTE ( FORMAT ( [Admin Hospitality Rating], "0.0" ), ",", "." )
-VAR _V4 = FORMAT ( [Admin Assist Adoption] * 100, "#,0" )
-VAR _V5 = FORMAT ( [Admin ESG On Time Submission] * 100, "#,0" )
-VAR _V6 = FORMAT ( [Admin Sustainability Diversion] * 100, "#,0" )
+Page Admin KPIs Ticker HTML =
+-- ======================================================================
+--  ADMIN KPI TICKER - MOTION GRAPHICS  |  HTML Content visual  |  1320 x 832
+--  Every KPI gets its own chart + entrance animation, one after the other.
+--  Bottom navigation = "KPI LIST" with a sliding active indicator.
+--  NOTE: the slot keyframes in _Css are tuned for _T = 28 and _S = 4.
+-- ======================================================================
+VAR _T = 28     -- seconds for the whole loop (7 KPIs x _S)
+VAR _S = 4      -- seconds each KPI is on stage
+VAR _Del = [Admin Events Delivered]
+VAR _Tgt = [Admin Events Target]
+VAR _Svy = [Admin Event Survey Score]
+VAR _Hos = [Admin Hospitality Rating]
+VAR _Kpis =
+    UNION (
+        ROW ( "I", 0, "Ratio", [Admin Storage Reduction],
+              "Val", SUBSTITUTE ( FORMAT ( [Admin Storage Reduction] * 100, "0.00" ), ",", "." ), "Unit", "%",
+              "L1", "Reduction in Physical", "L2", "Documents Storage Space", "Nav", "Storage" ),
+        ROW ( "I", 1, "Ratio", DIVIDE ( _Del, _Tgt ),
+              "Val", FORMAT ( _Del, "#,0" ), "Unit", "",
+              "L1", "Events", "L2", "Delivered vs Target", "Nav", "Events" ),
+        ROW ( "I", 2, "Ratio", DIVIDE ( _Svy, 5 ),
+              "Val", SUBSTITUTE ( FORMAT ( _Svy, "0.0" ), ",", "." ), "Unit", "/5",
+              "L1", "Events Survey", "L2", "Score", "Nav", "Survey" ),
+        ROW ( "I", 3, "Ratio", DIVIDE ( _Hos, 10 ),
+              "Val", SUBSTITUTE ( FORMAT ( _Hos, "0.0" ), ",", "." ), "Unit", "/10",
+              "L1", "Hospitality &amp; Receptionist", "L2", "Rating", "Nav", "Hospitality" ),
+        ROW ( "I", 4, "Ratio", [Admin Assist Adoption],
+              "Val", FORMAT ( [Admin Assist Adoption] * 100, "#,0" ), "Unit", "%",
+              "L1", "Admin Assist", "L2", "Adoption Rate", "Nav", "Admin Assist" ),
+        ROW ( "I", 5, "Ratio", [Admin ESG On Time Submission],
+              "Val", FORMAT ( [Admin ESG On Time Submission] * 100, "#,0" ), "Unit", "%",
+              "L1", "ESG On Time", "L2", "Submission", "Nav", "ESG" ),
+        ROW ( "I", 6, "Ratio", [Admin Sustainability Diversion],
+              "Val", FORMAT ( [Admin Sustainability Diversion] * 100, "#,0" ), "Unit", "%",
+              "L1", "Sustainability", "L2", "Diversion Rate", "Nav", "Diversion" )
+    )
+VAR _Star = "0,-34 8.2,-11.3 32.3,-10.5 13.3,4.3 20,27.5 0,14 -20,27.5 -13.3,4.3 -32.3,-10.5 -8.2,-11.3"
+
+-- ---------------- shared motion vocabulary (28s loop, slot = 0% .. 14.286%) ----------------
+VAR _Css =
+    "html,body{overflow:hidden!important;margin:0;background:transparent}"
+    & ".a{animation-duration:" & _T & "s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:cubic-bezier(.65,0,.35,1);animation-delay:calc(var(--d,0s) + var(--o,0s))}"
+    & ".fb{transform-box:fill-box;transform-origin:center}"
+    & ".k{animation-name:k}@keyframes k{0%{opacity:0;transform:translateY(24px);filter:blur(4px)}2.5%{opacity:1;transform:translateY(0px);filter:blur(0px)}12.857%{opacity:1;transform:translateY(0px);filter:blur(0px)}14.286%,100%{opacity:0;transform:translateY(-24px);filter:blur(6px)}}"
+    & ".c{animation-name:c;transform-origin:360px 380px}@keyframes c{0%{transform:scale(.82)}5%,100%{transform:scale(1)}}"
+    & ".v{animation-name:v;animation-timing-function:cubic-bezier(.16,1,.3,1)}@keyframes v{0%,1.071%{transform:translateY(190px)}5%,12.5%{transform:translateY(0px)}14.286%,100%{transform:translateY(-190px)}}"
+    & ".ln{animation-name:ln;transform-box:fill-box;transform-origin:left center}@keyframes ln{0%,2.143%{transform:scaleX(0)}5.714%,12.857%{transform:scaleX(1)}14.286%,100%{transform:scaleX(0)}}"
+    & ".t{animation-name:t}@keyframes t{0%,4.286%{opacity:0;transform:translateX(-30px)}6.786%,12.857%{opacity:1;transform:translateX(0px)}14.286%,100%{opacity:0;transform:translateX(0px)}}"
+    & ".dr{animation-name:dr}@keyframes dr{0%,1.786%{stroke-dashoffset:100}7.857%,100%{stroke-dashoffset:0}}"
+    & ".gy{animation-name:gy;transform-box:fill-box;transform-origin:center bottom}@keyframes gy{0%,1.786%{transform:scaleY(0)}6.429%,100%{transform:scaleY(1)}}"
+    & ".gx{animation-name:gx;transform-box:fill-box;transform-origin:left center}@keyframes gx{0%,1.786%{transform:scaleX(0)}7.143%,100%{transform:scaleX(1)}}"
+    & ".sx{animation-name:sx}@keyframes sx{0%,1.786%{transform:translateX(0px)}7.143%,100%{transform:translateX(var(--x))}}"
+    & ".pp{animation-name:pp}@keyframes pp{0%,1.786%{transform:scale(0) rotate(-45deg)}4.643%{transform:scale(1.18) rotate(6deg)}6.071%,100%{transform:scale(1) rotate(0deg)}}"
+    & ".nd{animation-name:nd;transform-origin:360px 470px}@keyframes nd{0%,1.786%{transform:rotate(-90deg)}6.429%{transform:rotate(calc(var(--a) + 8deg))}8.214%,100%{transform:rotate(var(--a))}}"
+    & ".rs{animation-name:rs}@keyframes rs{0%,1.786%{transform:translateY(var(--h))}8.571%,100%{transform:translateY(0px)}}"
+    & ".wv{animation:wv 2.4s linear infinite}@keyframes wv{from{transform:translateX(0px)}to{transform:translateX(-142px)}}"
+    & ".wb{animation:wb 3.6s linear infinite}@keyframes wb{from{transform:translateX(-142px)}to{transform:translateX(0px)}}"
+    & ".bb{animation:bb 3s ease-in infinite}@keyframes bb{0%{transform:translateY(0px);opacity:0}25%{opacity:.7}100%{transform:translateY(-130px);opacity:0}}"
+    & ".sp{animation:sp 14s linear infinite;transform-origin:360px 380px}@keyframes sp{to{transform:rotate(360deg)}}"
+    & ".gl{animation:gl 4s ease-in-out infinite;transform-origin:360px 380px}@keyframes gl{0%,100%{transform:scale(.92);opacity:.7}50%{transform:scale(1.06);opacity:1}}"
+    & ".r{transform-box:fill-box;transform-origin:left center}"
+    & ".nv{animation:nv " & _T & "s cubic-bezier(.65,0,.35,1) infinite both}"
+
+-- ---------------- KPI LIST navigation keyframes (per item) ----------------
+VAR _NavCss =
+    CONCATENATEX (
+        _Kpis,
+        VAR i  = [I]
+        VAR A  = SUBSTITUTE ( FORMAT ( i * _S / _T * 100, "0.000" ), ",", "." )
+        VAR A1 = SUBSTITUTE ( FORMAT ( ( i * _S + 0.3 ) / _T * 100, "0.000" ), ",", "." )
+        VAR B1 = SUBSTITUTE ( FORMAT ( ( ( i + 1 ) * _S - 0.3 ) / _T * 100, "0.000" ), ",", "." )
+        VAR Bm = SUBSTITUTE ( FORMAT ( ( ( i + 1 ) * _S - 0.01 ) / _T * 100, "0.000" ), ",", "." )
+        VAR B  = SUBSTITUTE ( FORMAT ( ( i + 1 ) * _S / _T * 100, "0.000" ), ",", "." )
+        RETURN
+            "@keyframes nr" & i & "{0%," & A & "%{transform:scaleX(0);fill:#10DCE8}" & Bm & "%{transform:scaleX(1);fill:#10DCE8}" & B & "%,100%{transform:scaleX(1);fill:#3E4A50}}"
+            & ".nr" & i & "{animation:nr" & i & " " & _T & "s linear infinite both}"
+            & "@keyframes nt" & i & "{0%," & A & "%{fill-opacity:.45}" & A1 & "%," & B1 & "%{fill-opacity:1}" & B & "%,100%{fill-opacity:.45}}"
+            & ".nt" & i & "{animation:nt" & i & " " & _T & "s ease infinite both}",
+        "", [I], ASC
+    )
+    & "@keyframes nv{"
+    & CONCATENATEX (
+        _Kpis,
+        SUBSTITUTE ( FORMAT ( [I] * _S / _T * 100, "0.000" ), ",", "." ) & "%,"
+            & SUBSTITUTE ( FORMAT ( ( ( [I] + 1 ) * _S - 0.45 ) / _T * 100, "0.000" ), ",", "." )
+            & "%{transform:translateX(" & [I] * 160 & "px)}",
+        "", [I], ASC
+    )
+    & "100%{transform:translateX(0px)}}"
+
+-- ---------------- one stage per KPI: unique chart + value + labels ----------------
+VAR _Stages =
+    CONCATENATEX (
+        _Kpis,
+        VAR i  = [I]
+        VAR R  = MIN ( 1, MAX ( 0, [Ratio] ) )
+        VAR P  = SUBSTITUTE ( FORMAT ( R * 100, "0.00" ), ",", "." )
+        VAR _Chart =
+            SWITCH (
+                i,
+                -- 0 | Storage: drawn ring + spinning orbit + stacked documents
+                0,
+                    "<circle cx='360' cy='380' r='184' fill='none' stroke='#FFFFFF' stroke-opacity='0.18' stroke-width='8' stroke-dasharray='1 8'/>"
+                    & "<circle class='sp' cx='360' cy='380' r='116' fill='none' stroke='#7FE3EC' stroke-opacity='0.4' stroke-width='2' stroke-dasharray='3 10'/>"
+                    & "<circle cx='360' cy='380' r='150' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='22'/>"
+                    & IF ( R > 0, "<circle class='a dr' cx='360' cy='380' r='150' pathLength='100' fill='none' stroke='url(#gA)' stroke-width='22' stroke-linecap='round' stroke-dasharray='" & P & " 200' transform='rotate(-90 360 380)'/>" )
+                    & CONCATENATEX (
+                        GENERATESERIES ( 0, 2, 1 ),
+                        VAR j = [Value]
+                        RETURN
+                            "<g transform='translate(" & 330 + j * 8 & " " & 341 + j * 8 & ")'><g class='a pp fb' style='--o:" & SUBSTITUTE ( FORMAT ( 0.4 + j * 0.15, "0.00" ), ",", "." ) & "s'>"
+                            & "<rect width='48' height='62' rx='5' fill='#161718' stroke='#7FE3EC' stroke-opacity='" & SUBSTITUTE ( FORMAT ( 0.4 + j * 0.3, "0.0" ), ",", "." ) & "' stroke-width='2'/>"
+                            & IF ( j = 2, "<rect x='10' y='16' width='28' height='3' rx='1.5' fill='#7FE3EC'/><rect x='10' y='27' width='28' height='3' rx='1.5' fill='#7FE3EC' fill-opacity='0.6'/><rect x='10' y='38' width='18' height='3' rx='1.5' fill='#7FE3EC' fill-opacity='0.4'/>" )
+                            & "</g></g>",
+                        "", [Value], ASC
+                    ),
+                -- 1 | Events: target column vs delivered column
+                1,
+                    VAR _Mx = MAX ( MAX ( _Del, _Tgt ), 1 )
+                    VAR hT  = ROUND ( 300 * DIVIDE ( _Tgt, _Mx ), 1 )
+                    VAR hD  = ROUND ( 300 * DIVIDE ( _Del, _Mx ), 1 )
+                    VAR hTs = SUBSTITUTE ( FORMAT ( hT, "0.0" ), ",", "." )
+                    VAR hDs = SUBSTITUTE ( FORMAT ( hD, "0.0" ), ",", "." )
+                    VAR yT  = SUBSTITUTE ( FORMAT ( 540 - hT, "0.0" ), ",", "." )
+                    VAR yD  = SUBSTITUTE ( FORMAT ( 540 - hD, "0.0" ), ",", "." )
+                    RETURN
+                        "<path d='M190 465H530M190 390H530M190 315H530M190 240H530' stroke='#FFFFFF' stroke-opacity='0.06'/>"
+                        & "<rect class='a gy' x='220' y='" & yT & "' width='110' height='" & hTs & "' rx='6' fill='#FFFFFF' fill-opacity='0.05' stroke='#FFFFFF' stroke-opacity='0.35' stroke-dasharray='6 6'/>"
+                        & "<rect class='a gy' style='--o:.15s' x='390' y='" & yD & "' width='110' height='" & hDs & "' rx='6' fill='url(#gV)'/>"
+                        & "<rect class='a gx' style='--o:.5s' x='190' y='" & yT & "' width='340' height='2' fill='#7FE3EC' fill-opacity='0.6'/>"
+                        & "<text class='a t' style='--o:-.6s' x='275' y='" & SUBSTITUTE ( FORMAT ( 524 - hT, "0.0" ), ",", "." ) & "' text-anchor='middle' fill='#8C979D' font-size='20'>" & FORMAT ( _Tgt, "#,0" ) & "</text>"
+                        & "<text class='a t' style='--o:-.45s' x='445' y='" & SUBSTITUTE ( FORMAT ( 524 - hD, "0.0" ), ",", "." ) & "' text-anchor='middle' fill='#FFFFFF' font-size='22' font-weight='600'>" & FORMAT ( _Del, "#,0" ) & "</text>"
+                        & "<rect x='190' y='540' width='340' height='2' fill='#FFFFFF' fill-opacity='0.25'/>"
+                        & "<text x='275' y='576' text-anchor='middle' fill='#8C979D' font-size='15' letter-spacing='2'>TARGET</text>"
+                        & "<text x='445' y='576' text-anchor='middle' fill='#7FE3EC' font-size='15' letter-spacing='2'>DELIVERED</text>",
+                -- 2 | Survey: five stars popping in, partially filled to the score
+                2,
+                    CONCATENATEX (
+                        GENERATESERIES ( 0, 4, 1 ),
+                        VAR j = [Value]
+                        VAR f = MIN ( 1, MAX ( 0, _Svy - j ) )
+                        RETURN
+                            "<g transform='translate(" & 200 + j * 80 & " 360)'><g class='a pp fb' style='--o:" & SUBSTITUTE ( FORMAT ( j * 0.12, "0.00" ), ",", "." ) & "s'>"
+                            & "<clipPath id='sc" & j & "'><rect x='-34' y='-34' width='" & SUBSTITUTE ( FORMAT ( 68 * f, "0.0" ), ",", "." ) & "' height='68'/></clipPath>"
+                            & "<polygon points='" & _Star & "' fill='#FFFFFF' fill-opacity='0.08' stroke='#FFFFFF' stroke-opacity='0.25' stroke-width='1.5' stroke-linejoin='round'/>"
+                            & "<polygon points='" & _Star & "' fill='url(#gA)' clip-path='url(#sc" & j & ")'/>"
+                            & "</g></g>",
+                        "", [Value], ASC
+                    )
+                    & "<rect x='200' y='446' width='320' height='6' rx='3' fill='#FFFFFF' fill-opacity='0.08'/>"
+                    & "<rect class='a gx' style='--o:.6s' x='200' y='446' width='" & SUBSTITUTE ( FORMAT ( 320 * R, "0.0" ), ",", "." ) & "' height='6' rx='3' fill='#10DCE8'/>"
+                    & "<text x='200' y='484' fill='#5E6A70' font-size='16'>0</text><text x='520' y='484' text-anchor='end' fill='#5E6A70' font-size='16'>5</text>",
+                -- 3 | Hospitality: 10-step equalizer, filled up to the rating
+                3,
+                    CONCATENATEX (
+                        GENERATESERIES ( 1, 10, 1 ),
+                        VAR j = [Value]
+                        VAR h = 60 + j * 24
+                        VAR x = 210 + ( j - 1 ) * 31
+                        VAR fill =
+                            IF ( j <= INT ( _Hos ), "fill='url(#gV)'",
+                                IF ( j - 1 < _Hos, "fill='#10DCE8' fill-opacity='0.45'", "fill='#FFFFFF' fill-opacity='0.1'" ) )
+                        RETURN
+                            "<rect class='a gy' style='--o:" & SUBSTITUTE ( FORMAT ( j * 0.07, "0.00" ), ",", "." ) & "s' x='" & x & "' y='" & 520 - h & "' width='22' height='" & h & "' rx='4' " & fill & "/>"
+                            & "<text x='" & x + 11 & "' y='550' text-anchor='middle' fill='#5E6A70' font-size='14'>" & j & "</text>",
+                        "", [Value], ASC
+                    ),
+                -- 4 | Admin Assist: semicircle gauge with swinging needle
+                4,
+                    VAR Ang = SUBSTITUTE ( FORMAT ( -90 + 180 * R, "0.0" ), ",", "." )
+                    RETURN
+                        "<g stroke='#FFFFFF' stroke-opacity='0.3' stroke-width='2'><line x1='164' y1='470' x2='154' y2='470'/><line x1='173.6' y1='409.4' x2='168.8' y2='407.9'/><line x1='201.4' y1='354.8' x2='197.4' y2='351.9'/><line x1='244.8' y1='311.4' x2='241.9' y2='307.4'/><line x1='299.4' y1='283.6' x2='297.9' y2='278.8'/><line x1='360' y1='274' x2='360' y2='264'/><line x1='420.6' y1='283.6' x2='422.1' y2='278.8'/><line x1='475.2' y1='311.4' x2='478.1' y2='307.4'/><line x1='518.6' y1='354.8' x2='522.6' y2='351.9'/><line x1='546.4' y1='409.4' x2='551.2' y2='407.9'/><line x1='556' y1='470' x2='566' y2='470'/></g>"
+                        & "<path d='M190 470A170 170 0 0 1 530 470' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='26'/>"
+                        & IF ( R > 0, "<path class='a dr' d='M190 470A170 170 0 0 1 530 470' pathLength='100' fill='none' stroke='url(#gA)' stroke-width='26' stroke-linecap='round' stroke-dasharray='" & P & " 200'/>" )
+                        & "<g class='a nd' style='--a:" & Ang & "deg'><line x1='360' y1='470' x2='360' y2='322' stroke='#FFFFFF' stroke-width='5' stroke-linecap='round'/><circle cx='360' cy='322' r='7' fill='#10DCE8'/></g>"
+                        & "<circle cx='360' cy='470' r='16' fill='#161718' stroke='#10DCE8' stroke-width='4'/>"
+                        & "<text x='190' y='516' text-anchor='middle' fill='#5E6A70' font-size='16'>0</text><text x='530' y='516' text-anchor='middle' fill='#5E6A70' font-size='16'>100</text>",
+                -- 5 | ESG: progress capsule with travelling head + 10-dot tally
+                5,
+                    VAR W = SUBSTITUTE ( FORMAT ( 380 * R, "0.0" ), ",", "." )
+                    RETURN
+                        CONCATENATEX (
+                            GENERATESERIES ( 0, 4, 1 ),
+                            "<text x='" & 170 + [Value] * 95 & "' y='328' text-anchor='middle' fill='#5E6A70' font-size='15'>" & [Value] * 25 & "</text>"
+                                & "<rect x='" & 169 + [Value] * 95 & "' y='338' width='2' height='10' fill='#FFFFFF' fill-opacity='0.2'/>",
+                            "", [Value], ASC
+                        )
+                        & "<rect x='170' y='360' width='380' height='36' rx='18' fill='#FFFFFF' fill-opacity='0.08'/>"
+                        & "<rect class='a gx' x='170' y='360' width='" & W & "' height='36' rx='18' fill='url(#gA)'/>"
+                        & "<g class='a sx' style='--x:" & W & "px'><circle cx='170' cy='378' r='28' fill='#10DCE8' fill-opacity='0.22'/><circle cx='170' cy='378' r='13' fill='#FFFFFF'/></g>"
+                        & CONCATENATEX (
+                            GENERATESERIES ( 0, 9, 1 ),
+                            VAR k = [Value]
+                            RETURN
+                                "<g transform='translate(" & 189 + k * 38 & " 462)'><circle class='a pp fb' style='--o:" & SUBSTITUTE ( FORMAT ( 0.5 + k * 0.06, "0.00" ), ",", "." ) & "s' r='11' "
+                                & IF ( k < ROUND ( R * 10, 0 ), "fill='#10DCE8'", "fill='none' stroke='#FFFFFF' stroke-opacity='0.25' stroke-width='2'" ) & "/></g>",
+                            "", [Value], ASC
+                        ),
+                -- 6 | Diversion: liquid fill with moving waves and bubbles
+                6,
+                    VAR yl = SUBSTITUTE ( FORMAT ( 522 - 284 * R, "0.0" ), ",", "." )
+                    VAR yl2 = SUBSTITUTE ( FORMAT ( 528 - 284 * R, "0.0" ), ",", "." )
+                    VAR H = SUBSTITUTE ( FORMAT ( 284 * R + 24, "0.0" ), ",", "." )
+                    VAR Wv = " t71 0 t71 0 t71 0 t71 0 t71 0 t71 0 t71 0V560H76Z"
+                    RETURN
+                        "<circle class='sp' cx='360' cy='380' r='172' fill='none' stroke='#7FE3EC' stroke-opacity='0.3' stroke-width='2' stroke-dasharray='2 12'/>"
+                        & "<circle cx='360' cy='380' r='150' fill='none' stroke='#10DCE8' stroke-opacity='0.45' stroke-width='3'/>"
+                        & "<g clip-path='url(#lq)'><rect x='218' y='238' width='284' height='284' fill='#FFFFFF' fill-opacity='0.03'/>"
+                        & "<g class='a rs' style='--h:" & H & "px'>"
+                        & "<path class='wb' d='M76 " & yl2 & "q35.5 14 71 0" & Wv & "' fill='#10DCE8' fill-opacity='0.3'/>"
+                        & "<path class='wv' d='M76 " & yl & "q35.5 -14 71 0" & Wv & "' fill='url(#gV)'/>"
+                        & "<circle class='bb' cx='320' cy='510' r='4' fill='#FFFFFF' fill-opacity='0.6'/>"
+                        & "<circle class='bb' style='animation-delay:1s' cx='372' cy='516' r='6' fill='#FFFFFF' fill-opacity='0.5'/>"
+                        & "<circle class='bb' style='animation-delay:2s' cx='410' cy='512' r='3' fill='#FFFFFF' fill-opacity='0.6'/>"
+                        & "</g></g>"
+            )
+        RETURN
+            "<g class='a k' style='--d:-" & _T - _S * i & "s'>"
+            & "<text class='a t' x='1214' y='112' text-anchor='end' fill='#8C979D' font-size='20' letter-spacing='2'><tspan fill='#10DCE8' font-weight='700'>0" & i + 1 & "</tspan> / 0" & COUNTROWS ( _Kpis ) & "</text>"
+            & "<g class='a c'>" & _Chart & "</g>"
+            & "<g clip-path='url(#vc)'><text class='a v' x='700' y='420' fill='#FFFFFF' font-size='160' font-weight='300' letter-spacing='-5'>" & [Val]
+            & "<tspan font-size='64' font-weight='400' fill='#7FE3EC' dx='8' letter-spacing='-1'>" & [Unit] & "</tspan></text></g>"
+            & "<rect class='a ln' x='700' y='458' width='420' height='3' fill='#10DCE8'/>"
+            & "<text class='a t' x='700' y='526' fill='#F1F4F6' font-size='40' font-weight='600' letter-spacing='0.3'>" & [L1] & "</text>"
+            & "<text class='a t' style='--o:.15s' x='700' y='572' fill='#8C979D' font-size='26' letter-spacing='0.6'>" & [L2] & "</text>"
+            & "</g>",
+        "", [I], ASC
+    )
+
+-- ---------------- KPI LIST navigation ----------------
+VAR _Nav =
+    "<text x='106' y='716' fill='#7FE3EC' font-size='14' font-weight='700' letter-spacing='3'>KPI LIST</text>"
+    & "<rect x='200' y='711' width='1014' height='1' fill='#FFFFFF' fill-opacity='0.1'/>"
+    & "<rect class='nv' x='98' y='734' width='164' height='66' rx='10' fill='#10DCE8' fill-opacity='0.07' stroke='#10DCE8' stroke-opacity='0.3'/>"
+    & CONCATENATEX (
+        _Kpis,
+        VAR x = 106 + [I] * 160
+        RETURN
+            "<rect x='" & x & "' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/>"
+            & "<rect class='r nr" & [I] & "' x='" & x & "' y='748' width='148' height='4' rx='2' fill='#10DCE8'/>"
+            & "<text class='nt" & [I] & "' x='" & x & "' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>"
+            & "<tspan fill='#10DCE8'>0" & [I] + 1 & "</tspan><tspan dx='8'>" & [Nav] & "</tspan></text>",
+        "", [I], ASC
+    )
+
 RETURN
-"<style>html,body{overflow:hidden!important;margin:0;background:transparent}.a{animation-duration:28s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:cubic-bezier(.65,0,.35,1)}.l{transform-box:fill-box;transform-origin:center}.r{animation-timing-function:linear;transform-box:fill-box;transform-origin:left center}@keyframes kn{0%{opacity:0;transform:translate(0px,300px)}0.714%{opacity:1;transform:translate(0px,300px)}3.571%{opacity:1;transform:translate(0px,0px)}12.5%{opacity:1;transform:translate(0px,0px)}14.643%{opacity:1;transform:translate(0px,-320px)}14.821%{opacity:0;transform:translate(0px,-320px)}100%{opacity:0;transform:translate(0px,-320px)}}@keyframes kl{0%{transform:scaleX(0)}0.179%{transform:scaleX(0)}2.5%{transform:scaleX(1)}12.679%{transform:scaleX(1)}14.286%{transform:scaleX(0)}100%{transform:scaleX(0)}}@keyframes ka{0%{opacity:0;transform:translate(0px,18px)}2.679%{opacity:0;transform:translate(0px,18px)}4.643%{opacity:1;transform:translate(0px,0px)}12.321%{opacity:1;transform:translate(0px,0px)}13.75%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}@keyframes kb{0%{opacity:0;transform:translate(0px,18px)}3.393%{opacity:0;transform:translate(0px,18px)}5.357%{opacity:1;transform:translate(0px,0px)}12.321%{opacity:1;transform:translate(0px,0px)}13.75%{opacity:0;transform:translate(0px,0px)}100%{opacity:0;transform:translate(0px,0px)}}@keyframes rs0{0%{transform:scaleX(0);fill:#10DCE8}14.25%"
-& "{transform:scaleX(1);fill:#10DCE8}14.286%{transform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt0{0%{fill-opacity:0.45}1.071%{fill-opacity:1}13.571%{fill-opacity:1}14.643%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs1{0%{transform:scaleX(0);fill:#10DCE8}14.286%{transform:scaleX(0);fill:#10DCE8}28.536%{transform:scaleX(1);fill:#10DCE8}28.571%{transform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt1{0%{fill-opacity:0.45}14.286%{fill-opacity:0.45}15.357%{fill-opacity:1}27.857%{fill-opacity:1}28.929%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs2{0%{transform:scaleX(0);fill:#10DCE8}28.571%{transform:scaleX(0);fill:#10DCE8}42.821%{transform:scaleX(1);fill:#10DCE8}42.857%{transform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt2{0%{fill-opacity:0.45}28.571%{fill-opacity:0.45}29.643%{fill-opacity:1}42.143%{fill-opacity:1}43.214%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs3{0%{transform:scaleX(0);fill:#10DCE8}42.857%{transform:scaleX(0);fill:#10DCE8}57.107%{transform:scaleX(1);fill:#10DCE8}57.143%{transform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt3{0%{fill-opacity:0.45}42.857%{fill-opacity:0.45}43.929%{fill-opacity:1}56.429%{fill-opacity:1}57.5%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs4{0%{transform:scaleX(0);fill:#10DCE8}57.143%{transform:scaleX(0);fill:#10DCE8}71.393%{transform:scaleX(1);fill:#10DCE8}71.429%{tra"
-& "nsform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt4{0%{fill-opacity:0.45}57.143%{fill-opacity:0.45}58.214%{fill-opacity:1}70.714%{fill-opacity:1}71.786%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs5{0%{transform:scaleX(0);fill:#10DCE8}71.429%{transform:scaleX(0);fill:#10DCE8}85.679%{transform:scaleX(1);fill:#10DCE8}85.714%{transform:scaleX(1);fill:#5E6A70}100%{transform:scaleX(1);fill:#5E6A70}}@keyframes rt5{0%{fill-opacity:0.45}71.429%{fill-opacity:0.45}72.5%{fill-opacity:1}85%{fill-opacity:1}86.071%{fill-opacity:0.45}100%{fill-opacity:0.45}}@keyframes rs6{0%{transform:scaleX(0);fill:#10DCE8}85.714%{transform:scaleX(0);fill:#10DCE8}99.964%{transform:scaleX(1);fill:#10DCE8}}@keyframes rt6{0%{fill-opacity:0.45}85.714%{fill-opacity:0.45}86.786%{fill-opacity:1}99.286%{fill-opacity:1}100%{fill-opacity:0.45}}</style>"
-& "<div style='position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden'><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1320 832' width='100%' height='100%' preserveAspectRatio='xMidYMid meet' style='display:block' font-family='Segoe UI,Arial,sans-serif' text-rendering='geometricPrecision' shape-rendering='geometricPrecision'><defs><linearGradient id='tF' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.05'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0.015'/></linearGradient><clipPath id='tC'><rect x='0' y='196' width='1320' height='282'/></clipPath></defs><rect x='1' y='1' width='1318' height='830' rx='20' fill='#161718'/><rect x='1' y='1' width='1318' height='830' rx='20' fill='url(#tF)' stroke='#FFFFFF' stroke-opacity='0.12' stroke-width='1.5'/><line x1='420' y1='490.5' x2='900' y2='490.5' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='1'/><g clip-path='url(#tC)'><text class='a' style='animation-name:kn;animation-delay:-28.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V0
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>%</tspan></text><text class='a' style='animation-name:kn;animation-delay:-24.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V1
-& "</text><text class='a' style='animation-name:kn;animation-delay:-20.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V2
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>/5</tspan></text><text class='a' style='animation-name:kn;animation-delay:-16.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V3
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>/10</tspan></text><text class='a' style='animation-name:kn;animation-delay:-12.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V4
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>%</tspan></text><text class='a' style='animation-name:kn;animation-delay:-8.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V5
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>%</tspan></text><text class='a' style='animation-name:kn;animation-delay:-4.00s' x='660' y='440' text-anchor='middle' fill='#FFFFFF' font-size='210' font-weight='300' letter-spacing='-6'>"
-& _V6
-& "<tspan font-size='84' font-weight='400' fill='#7FE3EC' dx='10' letter-spacing='-1'>%</tspan></text></g><rect class='a l' style='animation-name:kl;animation-delay:-28.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-28.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Reduction in Physical</text><text class='a' style='animation-name:kb;animation-delay:-28.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Documents Storage Space</text><rect class='a l' style='animation-name:kl;animation-delay:-24.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-24.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Events</text><text class='a' style='animation-name:kb;animation-delay:-24.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Delivered</text><rect class='a l' style='animation-name:kl;animation-delay:-20.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-20.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Events Survey</text><text class='a' style='animation-name:kb;animation-delay:-20."
-& "00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Score</text><rect class='a l' style='animation-name:kl;animation-delay:-16.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-16.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Hospitality &amp; Receptionist</text><text class='a' style='animation-name:kb;animation-delay:-16.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Rating</text><rect class='a l' style='animation-name:kl;animation-delay:-12.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-12.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Admin Assist</text><text class='a' style='animation-name:kb;animation-delay:-12.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Adoption Rate</text><rect class='a l' style='animation-name:kl;animation-delay:-8.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-8.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>ESG On Time</text><text class='a' style='animation-name:kb;an"
-& "imation-delay:-8.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Submission</text><rect class='a l' style='animation-name:kl;animation-delay:-4.00s' x='420' y='489' width='480' height='3' fill='#10DCE8'/><text class='a' style='animation-name:ka;animation-delay:-4.00s' x='660' y='566' text-anchor='middle' fill='#F1F4F6' font-size='42' font-weight='600' letter-spacing='0.3'>Sustainability</text><text class='a' style='animation-name:kb;animation-delay:-4.00s' x='660' y='614' text-anchor='middle' fill='#8C979D' font-size='26' font-weight='400' letter-spacing='0.6'>Diversion Rate</text><rect x='106' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs0;animation-delay:0s' x='106' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt0;animation-delay:0s;animation-timing-function:linear' x='106' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Storage</text><rect x='266' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs1;animation-delay:0s' x='266' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt1;animation-delay:0s;animation-timing-function:linear' x='266' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Events</text><rect x='426' y='748' width='148' he"
-& "ight='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs2;animation-delay:0s' x='426' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt2;animation-delay:0s;animation-timing-function:linear' x='426' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Survey</text><rect x='586' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs3;animation-delay:0s' x='586' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt3;animation-delay:0s;animation-timing-function:linear' x='586' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Hospitality</text><rect x='746' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs4;animation-delay:0s' x='746' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt4;animation-delay:0s;animation-timing-function:linear' x='746' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Admin Assist</text><rect x='906' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs5;animation-delay:0s' x='906' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt5;animation-delay:0s;animation-timing-function:linear'"
-& " x='906' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>ESG</text><rect x='1066' y='748' width='148' height='4' rx='2' fill='#FFFFFF' fill-opacity='0.1'/><rect class='a r' style='animation-name:rs6;animation-delay:0s' x='1066' y='748' width='148' height='4' rx='2' fill='#10DCE8'/><text class='a' style='animation-name:rt6;animation-delay:0s;animation-timing-function:linear' x='1066' y='782' fill='#C9D3D8' font-size='15' font-weight='600' letter-spacing='0.6'>Diversion</text></svg></div>"
+    "<style>" & _Css & _NavCss
+    & "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
+    & "</style><div style='position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden'>"
+    & "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1320 832' width='100%' height='100%' preserveAspectRatio='xMidYMid meet' style='display:block' font-family='Segoe UI,Arial,sans-serif' text-rendering='geometricPrecision' shape-rendering='geometricPrecision'>"
+    & "<defs>"
+    & "<linearGradient id='tF' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.05'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0.015'/></linearGradient>"
+    & "<linearGradient id='gA' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#00B8D4'/></linearGradient>"
+    & "<linearGradient id='gV' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#0A8FA8'/></linearGradient>"
+    & "<radialGradient id='gG'><stop offset='0.4' stop-color='#10DCE8' stop-opacity='0.12'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0'/></radialGradient>"
+    & "<clipPath id='vc'><rect x='680' y='250' width='620' height='200'/></clipPath>"
+    & "<clipPath id='lq'><circle cx='360' cy='380' r='142'/></clipPath>"
+    & "</defs>"
+    & "<rect x='1' y='1' width='1318' height='830' rx='20' fill='#161718'/>"
+    & "<rect x='1' y='1' width='1318' height='830' rx='20' fill='url(#tF)' stroke='#FFFFFF' stroke-opacity='0.12' stroke-width='1.5'/>"
+    & "<text x='106' y='112' fill='#8C979D' font-size='18' font-weight='600' letter-spacing='3'>ADMIN &#183; OTHER RELEVANT KPIs</text>"
+    & "<circle class='gl' cx='360' cy='380' r='230' fill='url(#gG)'/>"
+    & _Stages
+    & _Nav
+    & "</svg></div>"
