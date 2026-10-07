@@ -1,0 +1,148 @@
+Admin KPI Tile Spotlight =
+-- ======================================================================
+--  ADMIN KPI - STATIC GRID  ->  ONE-BY-ONE SPOTLIGHT  ->  BACK TO GRID
+--  HTML Content visual | viewBox 406 x 276 (same as compact tile)
+-- ======================================================================
+VAR _H = 5      -- seconds static grid is shown
+VAR _S = 4      -- seconds per spotlight KPI
+VAR _T = 35     -- total loop = _H + 7*_S + 2
+VAR _W1 = 94
+VAR _W2 = 128.67
+VAR _Circ = 163.36
+VAR _Tiles =
+    UNION (
+        ROW ( "Ord", 1, "X", 0, "Y", 8, "W", _W1, "Ratio", [Admin ESG On Time Submission],
+              "Value", FORMAT ( [Admin ESG On Time Submission], "0%" ),
+              "SV", FORMAT ( [Admin ESG On Time Submission] * 100, "0" ), "SU", "%",
+              "Line1", "ESG on time", "Line2", "submission" ),
+        ROW ( "Ord", 2, "X", 104, "Y", 8, "W", _W1, "Ratio", [Admin Assist Adoption],
+              "Value", FORMAT ( [Admin Assist Adoption], "0%" ),
+              "SV", FORMAT ( [Admin Assist Adoption] * 100, "0" ), "SU", "%",
+              "Line1", "Admin Assist", "Line2", "adoption" ),
+        ROW ( "Ord", 3, "X", 208, "Y", 8, "W", _W1, "Ratio", DIVIDE ( [Admin Event Survey Score], 5 ),
+              "Value", FORMAT ( [Admin Event Survey Score], "0.0" ) & "<tspan font-size='9' fill='#9FC9D4'>/5</tspan>",
+              "SV", SUBSTITUTE ( FORMAT ( [Admin Event Survey Score], "0.0" ), ",", "." ), "SU", "/5",
+              "Line1", "Event survey", "Line2", "score" ),
+        ROW ( "Ord", 4, "X", 312, "Y", 8, "W", _W1, "Ratio", DIVIDE ( [Admin Hospitality Rating], 10 ),
+              "Value", FORMAT ( [Admin Hospitality Rating], "0.0" ) & "<tspan font-size='9' fill='#9FC9D4'>/10</tspan>",
+              "SV", SUBSTITUTE ( FORMAT ( [Admin Hospitality Rating], "0.0" ), ",", "." ), "SU", "/10",
+              "Line1", "Hospitality", "Line2", "rating" ),
+        ROW ( "Ord", 5, "X", 0, "Y", 146, "W", _W2, "Ratio", DIVIDE ( [Admin Events Delivered], [Admin Events Target] ),
+              "Value", FORMAT ( [Admin Events Delivered], "#,0" ),
+              "SV", FORMAT ( [Admin Events Delivered], "#,0" ), "SU", "",
+              "Line1", "Events", "Line2", "delivered" ),
+        ROW ( "Ord", 6, "X", 138.67, "Y", 146, "W", _W2, "Ratio", [Admin Storage Reduction],
+              "Value", FORMAT ( [Admin Storage Reduction], "0.00%" ),
+              "SV", SUBSTITUTE ( FORMAT ( [Admin Storage Reduction] * 100, "0.00" ), ",", "." ), "SU", "%",
+              "Line1", "Physical documents", "Line2", "storage reduction" ),
+        ROW ( "Ord", 7, "X", 277.33, "Y", 146, "W", _W2, "Ratio", [Admin Sustainability Diversion],
+              "Value", FORMAT ( [Admin Sustainability Diversion], "0%" ),
+              "SV", FORMAT ( [Admin Sustainability Diversion] * 100, "0" ), "SU", "%",
+              "Line1", "Sustainability", "Line2", "diversion" )
+    )
+VAR _PopIn  = "animation-timing-function:cubic-bezier(.34,1.56,.64,1)"
+VAR _EaseIn = "animation-timing-function:cubic-bezier(.55,0,1,.45)"
+VAR _GOut1 = SUBSTITUTE ( FORMAT ( ( _H - 0.6 ) / _T * 100, "0.000" ), ",", "." )
+VAR _GOut2 = SUBSTITUTE ( FORMAT ( ( _H + 0.2 ) / _T * 100, "0.000" ), ",", "." )
+VAR _GBack = SUBSTITUTE ( FORMAT ( ( _T - 1.8 ) / _T * 100, "0.000" ), ",", "." )
+
+-- ---------------- per-KPI spotlight keyframes ----------------
+VAR _Css =
+    CONCATENATEX (
+        _Tiles,
+        VAR o  = [Ord]
+        VAR t0 = _H + ( o - 1 ) * _S
+        VAR A  = SUBSTITUTE ( FORMAT ( t0 / _T * 100, "0.000" ), ",", "." )
+        VAR B  = SUBSTITUTE ( FORMAT ( ( t0 + 0.9 ) / _T * 100, "0.000" ), ",", "." )
+        VAR C  = SUBSTITUTE ( FORMAT ( ( t0 + _S - 0.7 ) / _T * 100, "0.000" ), ",", "." )
+        VAR D  = SUBSTITUTE ( FORMAT ( ( t0 + _S ) / _T * 100, "0.000" ), ",", "." )
+        VAR R0 = SUBSTITUTE ( FORMAT ( ( t0 + 0.5 ) / _T * 100, "0.000" ), ",", "." )
+        VAR R1 = SUBSTITUTE ( FORMAT ( ( t0 + 1.8 ) / _T * 100, "0.000" ), ",", "." )
+        VAR Cx = SUBSTITUTE ( FORMAT ( [X] + [W] / 2, "0.00" ), ",", "." )
+        VAR Cy = [Y] + 46
+        VAR P  = SUBSTITUTE ( FORMAT ( MIN ( 1, MAX ( 0, [Ratio] ) ) * 100, "0.00" ), ",", "." )
+        RETURN
+            "@keyframes s" & o & "{0%," & A & "%{opacity:0;transform:translate(" & Cx & "px," & Cy & "px) scale(.37);filter:blur(0px);" & _PopIn & "}"
+            & B & "% ," & C & "%{opacity:1;transform:translate(203px,120px) scale(1);filter:blur(0px);" & _EaseIn & "}"
+            & D & "%,100%{opacity:0;transform:translate(203px,120px) scale(1.18);filter:blur(8px)}}"
+            & ".s" & o & "{animation:s" & o & " " & _T & "s infinite both}"
+            & "@keyframes r" & o & "{0%," & R0 & "%{stroke-dashoffset:" & P & "}" & R1 & "%,100%{stroke-dashoffset:0}}"
+            & ".r" & o & "{animation:r" & o & " " & _T & "s cubic-bezier(.65,0,.35,1) infinite both}"
+            & "@keyframes d" & o & "{0%," & A & "%{opacity:.25;fill:#FFFFFF}" & B & "% ," & C & "%{opacity:1;fill:#10DCE8}" & D & "%,100%{opacity:.25;fill:#FFFFFF}}"
+            & ".d" & o & "{animation:d" & o & " " & _T & "s ease infinite both}",
+        ""
+    )
+
+-- ---------------- static grid (compact tile) ----------------
+VAR _Grid =
+    CONCATENATEX (
+        _Tiles,
+        VAR _X = [X]
+        VAR _Y = [Y]
+        VAR _W = [W]
+        VAR _Cx = SUBSTITUTE ( FORMAT ( _X + _W / 2, "0.00" ), ",", "." )
+        VAR _Cy = _Y + 46
+        VAR _R = MIN ( 1, MAX ( 0, [Ratio] ) )
+        VAR _Arc = SUBSTITUTE ( FORMAT ( _Circ * _R, "0.0" ), ",", "." )
+        VAR _Fs = IF ( LEN ( [Value] ) >= 6 && SEARCH ( "tspan", [Value], 1, 0 ) = 0, 13, 16 )
+        VAR _Box = "x='" & _X + 0.5 & "' y='" & _Y + 0.5 & "' width='" & _W - 1 & "' height='124' rx='6'"
+        RETURN
+            "<rect " & _Box & " fill='url(#akFill)'/>"
+            & "<rect " & _Box & " fill='url(#akSheen)'/>"
+            & "<rect " & _Box & " fill='none' stroke='url(#akEdge)' stroke-width='1'/>"
+            & "<circle cx='" & _Cx & "' cy='" & _Cy & "' r='26' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='5'/>"
+            & IF ( _R > 0,
+                "<circle cx='" & _Cx & "' cy='" & _Cy & "' r='26' fill='none' stroke='url(#akArc)' stroke-width='5' stroke-linecap='round' stroke-dasharray='" & _Arc & " " & _Circ & "' transform='rotate(-90 " & _Cx & " " & _Cy & ")'/>",
+                "" )
+            & "<text x='" & _Cx & "' y='" & _Cy + ROUND ( _Fs * 0.35, 0 ) & "' text-anchor='middle' fill='#FFFFFF' font-size='" & _Fs & "' font-weight='600' letter-spacing='-0.3'>" & [Value] & "</text>"
+            & "<text x='" & _Cx & "' y='" & _Y + 96 & "' text-anchor='middle' fill='#D6E4E8' font-size='8.5' font-weight='500'>" & [Line1] & "</text>"
+            & "<text x='" & _Cx & "' y='" & _Y + 107 & "' text-anchor='middle' fill='#9FB6BD' font-size='8.5'>" & [Line2] & "</text>",
+        "", [Ord], ASC
+    )
+
+-- ---------------- spotlight layer ----------------
+VAR _Spots =
+    CONCATENATEX (
+        _Tiles,
+        VAR o = [Ord]
+        VAR P = SUBSTITUTE ( FORMAT ( MIN ( 1, MAX ( 0, [Ratio] ) ) * 100, "0.00" ), ",", "." )
+        RETURN
+            "<g class='s s" & o & "'>"
+            & "<circle r='96' fill='url(#akGlow)'/>"
+            & "<circle r='70' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='10'/>"
+            & "<circle class='r" & o & "' r='70' pathLength='100' fill='none' stroke='url(#akArc)' stroke-width='10' stroke-linecap='round' stroke-dasharray='" & P & " 100' transform='rotate(-90)'/>"
+            & "<text y='13' text-anchor='middle' fill='#FFFFFF' font-size='38' font-weight='600' letter-spacing='-1'>" & [SV]
+            & "<tspan font-size='16' fill='#9FC9D4' dx='2'>" & [SU] & "</tspan></text>"
+            & "<text y='102' text-anchor='middle' fill='#D6E4E8' font-size='15' font-weight='600'>" & [Line1] & "</text>"
+            & "<text y='120' text-anchor='middle' fill='#9FB6BD' font-size='12'>" & [Line2] & "</text>"
+            & "</g>",
+        "", [Ord], ASC
+    )
+VAR _Dots =
+    CONCATENATEX (
+        _Tiles,
+        "<circle class='d" & [Ord] & "' cx='" & 203 + ( [Ord] - 4 ) * 14 & "' cy='264' r='2.6'/>",
+        "", [Ord], ASC
+    )
+
+RETURN
+    "<style>html,body{overflow:hidden!important;margin:0;background:transparent}"
+    & ".g{transform-origin:203px 138px;animation:g " & _T & "s cubic-bezier(.65,0,.35,1) infinite both}"
+    & "@keyframes g{0%," & _GOut1 & "%{opacity:1;transform:scale(1);filter:blur(0px)}" & _GOut2 & "% ," & _GBack & "%{opacity:0;transform:scale(.9);filter:blur(6px)}100%{opacity:1;transform:scale(1);filter:blur(0px)}}"
+    & ".h{animation:h " & _T & "s ease infinite both}"
+    & "@keyframes h{0%," & _GOut1 & "%{opacity:0}" & _GOut2 & "% ," & _GBack & "%{opacity:1}100%{opacity:0}}"
+    & ".s{opacity:0}"
+    & _Css
+    & "@media (prefers-reduced-motion:reduce){*{animation:none!important}.s,.h{display:none}}"
+    & "</style><div style='position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden'>"
+    & "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 406 276' width='100%' height='100%' style='display:block' font-family='Segoe UI,Arial,sans-serif'>"
+    & "<defs>"
+    & "<linearGradient id='akFill' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#10DCE8' stop-opacity='0.13'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0.03'/></linearGradient>"
+    & "<radialGradient id='akSheen' cx='0.15' cy='0' r='0.9'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.1'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0'/></radialGradient>"
+    & "<linearGradient id='akEdge' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.34'/><stop offset='0.5' stop-color='#FFFFFF' stop-opacity='0.06'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0.18'/></linearGradient>"
+    & "<linearGradient id='akArc' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#00B8D4'/></linearGradient>"
+    & "<radialGradient id='akGlow'><stop offset='0.55' stop-color='#10DCE8' stop-opacity='0.16'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0'/></radialGradient>"
+    & "</defs>"
+    & "<g class='g'>" & _Grid & "</g>"
+    & "<g class='h'>" & _Spots & _Dots & "</g>"
+    & "</svg></div>"
