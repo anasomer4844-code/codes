@@ -1,0 +1,103 @@
+Admin KPI Tile Animated =
+-- ======================================================================
+--  ADMIN KPI TILE - MOTION  |  HTML Content visual  |  1400 x 960
+--  Static 7 rings  ->  after _Hold seconds, spotlight loop starts
+-- ======================================================================
+VAR _Title = "Admin - Other Relevant KPIs"
+VAR _Hold  = 4      -- seconds the static view is shown before motion
+VAR _Cycle = 28     -- full loop: 8 slots x 3.5s (1 ensemble + 7 spotlights)
+
+VAR _Kpis =
+    UNION (
+        ROW ( "I", 1, "Cx", 175,  "Cy", 318, "Ratio", [Admin Storage Reduction],
+              "Value", SUBSTITUTE ( FORMAT ( [Admin Storage Reduction] * 100, "0.00" ), ",", "." ), "Unit", "%",
+              "L1", "Reduction in Physical", "L2", "Document Storage" ),
+        ROW ( "I", 2, "Cx", 525,  "Cy", 318, "Ratio", DIVIDE ( [Admin Events Delivered], [Admin Events Target] ),
+              "Value", FORMAT ( [Admin Events Delivered], "#,0" ), "Unit", "",
+              "L1", "Events Delivered", "L2", "vs Target" ),
+        ROW ( "I", 3, "Cx", 875,  "Cy", 318, "Ratio", DIVIDE ( [Admin Event Survey Score], 5 ),
+              "Value", SUBSTITUTE ( FORMAT ( [Admin Event Survey Score], "0.0" ), ",", "." ), "Unit", "/5",
+              "L1", "Events Survey Score", "L2", "Attendee Feedback" ),
+        ROW ( "I", 4, "Cx", 1225, "Cy", 318, "Ratio", DIVIDE ( [Admin Hospitality Rating], 10 ),
+              "Value", SUBSTITUTE ( FORMAT ( [Admin Hospitality Rating], "0.0" ), ",", "." ), "Unit", "/10",
+              "L1", "Hospitality &amp; Receptionist", "L2", "Rating" ),
+        ROW ( "I", 5, "Cx", 350,  "Cy", 708, "Ratio", [Admin Assist Adoption],
+              "Value", FORMAT ( [Admin Assist Adoption] * 100, "0" ), "Unit", "%",
+              "L1", "Admin Assist", "L2", "Adoption" ),
+        ROW ( "I", 6, "Cx", 700,  "Cy", 708, "Ratio", [Admin ESG On Time Submission],
+              "Value", FORMAT ( [Admin ESG On Time Submission] * 100, "0" ), "Unit", "%",
+              "L1", "ESG On Time", "L2", "Submission" ),
+        ROW ( "I", 7, "Cx", 1050, "Cy", 708, "Ratio", [Admin Sustainability Diversion],
+              "Value", FORMAT ( [Admin Sustainability Diversion] * 100, "0" ), "Unit", "%",
+              "L1", "Sustainability", "L2", "Waste Diversion" )
+    )
+
+-- visual states
+VAR _Full = "opacity:1;transform:scale(1);filter:drop-shadow(0 0 0 rgba(16,220,232,0))"
+VAR _Dim  = "opacity:.3;transform:scale(.94);filter:drop-shadow(0 0 0 rgba(16,220,232,0))"
+VAR _Hl   = "opacity:1;transform:scale(1.07);filter:drop-shadow(0 0 18px rgba(16,220,232,.55))"
+VAR _Ease = "cubic-bezier(.65,0,.35,1)"
+
+-- per-ring keyframes (generated)
+VAR _Css =
+    CONCATENATEX (
+        _Kpis,
+        VAR i  = [I]
+        VAR s  = ( i ) * 12.5
+        VAR e  = s + 12.5
+        VAR P  = SUBSTITUTE ( FORMAT ( MIN ( 1, MAX ( 0, [Ratio] ) ) * 100, "0.00" ), ",", "." )
+        VAR S0 = SUBSTITUTE ( FORMAT ( s, "0.00" ), ",", "." )
+        VAR S1 = SUBSTITUTE ( FORMAT ( s + 1.5, "0.00" ), ",", "." )
+        VAR S2 = SUBSTITUTE ( FORMAT ( s + 2.2, "0.00" ), ",", "." )
+        VAR S3 = SUBSTITUTE ( FORMAT ( s + 6.5, "0.00" ), ",", "." )
+        VAR E1 = SUBSTITUTE ( FORMAT ( e - 1.5, "0.00" ), ",", "." )
+        VAR E0 = SUBSTITUTE ( FORMAT ( e, "0.00" ), ",", "." )
+        RETURN
+            "@keyframes sp" & i & "{0%,10.5%{" & _Full & "}"
+            & IF ( i > 1, "12.5%," & S0 & "%{" & _Dim & "}" )
+            & S1 & "%," & E1 & "%{" & _Hl & "}"
+            & IF ( i < 7, E0 & "%,97%{" & _Dim & "}" )
+            & "100%{" & _Full & "}}"
+            & "@keyframes ar" & i & "{0%," & S0 & "%{stroke-dashoffset:0}"
+            & S2 & "%{stroke-dashoffset:" & P & "}"
+            & S3 & "%,100%{stroke-dashoffset:0}}"
+            & ".k" & i & "{transform-origin:" & [Cx] & "px " & [Cy] & "px;animation:sp" & i & " " & _Cycle & "s " & _Ease & " " & _Hold & "s infinite}"
+            & ".a" & i & "{animation:ar" & i & " " & _Cycle & "s " & _Ease & " " & _Hold & "s infinite}",
+        ""
+    )
+
+-- ring markup (generated)
+VAR _Rings =
+    CONCATENATEX (
+        _Kpis,
+        VAR i  = [I]
+        VAR cx = [Cx]
+        VAR cy = [Cy]
+        VAR P  = SUBSTITUTE ( FORMAT ( MIN ( 1, MAX ( 0, [Ratio] ) ) * 100, "0.00" ), ",", "." )
+        RETURN
+            "<g class='k k" & i & "'>"
+            & "<circle cx='" & cx & "' cy='" & cy & "' r='112' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='16'/>"
+            & "<circle class='a" & i & "' cx='" & cx & "' cy='" & cy & "' r='112' pathLength='100' fill='none' stroke='url(#kpiG)' stroke-width='16' stroke-linecap='round' stroke-dasharray='" & P & " 100' transform='rotate(-90 " & cx & " " & cy & ")'/>"
+            & "<text x='" & cx & "' y='" & cy + 20 & "' text-anchor='middle' fill='#FFFFFF' font-size='56' font-weight='700'>" & [Value]
+            & "<tspan fill='#70B8D0' font-size='28' font-weight='600'>" & [Unit] & "</tspan></text>"
+            & "<text x='" & cx & "' y='" & cy + 164 & "' text-anchor='middle' fill='#FFFFFF' font-size='21' font-weight='600'>" & [L1] & "</text>"
+            & "<text x='" & cx & "' y='" & cy + 192 & "' text-anchor='middle' fill='#9FB6BD' font-size='19'>" & [L2] & "</text>"
+            & "</g>",
+        "", [I], ASC
+    )
+
+RETURN
+    "<style>html,body{overflow:hidden!important;margin:0;background:transparent}"
+    & ".k{will-change:transform,opacity}"
+    & _Css
+    & "@keyframes sh{0%,100%{opacity:.55}50%{opacity:1}}"
+    & ".u{animation:sh 3.5s ease-in-out " & _Hold & "s infinite}"
+    & "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
+    & "</style>"
+    & "<div style='position:absolute;inset:0;overflow:hidden'>"
+    & "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 960' width='100%' height='100%' preserveAspectRatio='xMidYMid meet' font-family='Segoe UI, Arial, sans-serif' style='background:#111111'>"
+    & "<defs><linearGradient id='kpiG' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#00B8D4'/></linearGradient></defs>"
+    & "<text x='700' y='96' text-anchor='middle' fill='#FFFFFF' font-size='40' font-weight='600'>" & _Title & "</text>"
+    & "<rect class='u' x='640' y='118' width='120' height='3' rx='1.5' fill='url(#kpiG)'/>"
+    & _Rings
+    & "</svg></div>"
