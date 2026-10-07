@@ -1,0 +1,49 @@
+Admin KPI Tile Compact = VAR _W1 = 94
+VAR _W2 = 128.67
+VAR _Tiles =
+    UNION (
+        ROW ( "X", 138.67, "Y", 146, "W", _W2, "Ratio", [Admin Storage Reduction], "Value", FORMAT ( [Admin Storage Reduction], "0.00%" ), "Line1", "Physical documents", "Line2", "storage reduction" ),
+        ROW ( "X", 0, "Y", 146, "W", _W2, "Ratio", DIVIDE ( [Admin Events Delivered], [Admin Events Target] ), "Value", FORMAT ( [Admin Events Delivered], "#,0" ), "Line1", "Events", "Line2", "delivered" ),
+        ROW ( "X", 208, "Y", 8, "W", _W1, "Ratio", DIVIDE ( [Admin Event Survey Score], 5 ), "Value", FORMAT ( [Admin Event Survey Score], "0.0" ) & "<tspan font-size='9' fill='#9FC9D4'>/5</tspan>", "Line1", "Events survey", "Line2", "score" ),
+        ROW ( "X", 312, "Y", 8, "W", _W1, "Ratio", DIVIDE ( [Admin Hospitality Rating], 10 ), "Value", FORMAT ( [Admin Hospitality Rating], "0.0" ) & "<tspan font-size='9' fill='#9FC9D4'>/10</tspan>", "Line1", "Hospitality", "Line2", "rating" ),
+        ROW ( "X", 104, "Y", 8, "W", _W1, "Ratio", [Admin Assist Adoption], "Value", FORMAT ( [Admin Assist Adoption], "0%" ), "Line1", "Admin Assist", "Line2", "adoption" ),
+        ROW ( "X", 0, "Y", 8, "W", _W1, "Ratio", [Admin ESG On Time Submission], "Value", FORMAT ( [Admin ESG On Time Submission], "0%" ), "Line1", "ESG on time", "Line2", "submission" ),
+        ROW ( "X", 277.33, "Y", 146, "W", _W2, "Ratio", [Admin Sustainability Diversion], "Value", FORMAT ( [Admin Sustainability Diversion], "0%" ), "Line1", "Sustainability", "Line2", "diversion" )
+    )
+VAR _Circ = 163.36
+RETURN
+    "<style>html,body{overflow:hidden!important;margin:0}</style><div style='position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden'>"
+        & "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 406 276' width='100%' height='100%' style='display:block' font-family='Segoe UI,Arial,sans-serif'>"
+        & "<defs>"
+        & "<linearGradient id='akFill' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#10DCE8' stop-opacity='0.13'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0.03'/></linearGradient>"
+        & "<radialGradient id='akSheen' cx='0.15' cy='0' r='0.9'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.1'/><stop offset='1' stop-color='#FFFFFF' stop-opacity='0'/></radialGradient>"
+        & "<linearGradient id='akEdge' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#FFFFFF' stop-opacity='0.34'/><stop offset='0.5' stop-color='#FFFFFF' stop-opacity='0.06'/><stop offset='1' stop-color='#10DCE8' stop-opacity='0.3'/></linearGradient>"
+        & "<linearGradient id='akArc' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6FF6FF'/><stop offset='1' stop-color='#00B8D4'/></linearGradient>"
+        & "</defs>"
+        & CONCATENATEX (
+            _Tiles,
+            VAR _X = [X]
+            VAR _Y = [Y]
+            VAR _W = [W]
+            VAR _Cx = SUBSTITUTE ( FORMAT ( _X + _W / 2, "0.00" ), ",", "." )
+            VAR _Cy = _Y + 46
+            VAR _R = MIN ( 1, MAX ( 0, [Ratio] ) )
+            VAR _Arc = SUBSTITUTE ( FORMAT ( _Circ * _R, "0.0" ), ",", "." )
+            VAR _Fs = IF ( LEN ( [Value] ) >= 6 && SEARCH ( "tspan", [Value], 1, 0 ) = 0, 13, 16 )
+            VAR _Box = "x='" & _X + 0.5 & "' y='" & _Y + 0.5 & "' width='" & _W - 1 & "' height='124' rx='6'"
+            RETURN
+                "<rect " & _Box & " fill='url(#akFill)'/>"
+                    & "<rect " & _Box & " fill='url(#akSheen)'/>"
+                    & "<rect " & _Box & " fill='none' stroke='url(#akEdge)' stroke-width='1'/>"
+                    & "<circle cx='" & _Cx & "' cy='" & _Cy & "' r='26' fill='none' stroke='#FFFFFF' stroke-opacity='0.08' stroke-width='5'/>"
+                    & IF (
+                        _R > 0,
+                        "<circle cx='" & _Cx & "' cy='" & _Cy & "' r='26' fill='none' stroke='url(#akArc)' stroke-width='5' stroke-linecap='round' stroke-dasharray='" & _Arc & " " & _Circ & "' transform='rotate(-90 " & _Cx & " " & _Cy & ")'/>",
+                        ""
+                    )
+                    & "<text x='" & _Cx & "' y='" & _Cy + ROUND ( _Fs * 0.35, 0 ) & "' text-anchor='middle' fill='#FFFFFF' font-size='" & _Fs & "' font-weight='600' letter-spacing='-0.3'>" & [Value] & "</text>"
+                    & "<text x='" & _Cx & "' y='" & _Y + 96 & "' text-anchor='middle' fill='#D6E4E8' font-size='8.5' font-weight='500'>" & [Line1] & "</text>"
+                    & "<text x='" & _Cx & "' y='" & _Y + 107 & "' text-anchor='middle' fill='#9FB6BD' font-size='8.5'>" & [Line2] & "</text>",
+            ""
+        )
+        & "</svg></div>"
